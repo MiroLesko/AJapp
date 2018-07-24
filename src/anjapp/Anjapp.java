@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -20,13 +21,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -68,13 +70,26 @@ public class Anjapp extends Application {
             PasswordField hesloTextField = new PasswordField();
             hesloTextField.setMaxWidth(200);
             
-            Button prihlasitButton = new Button("Prihlásiť");
+            
+            Label infoLabel = new Label();
+            Button prihlasitButton = new Button();
+            prihlasitButton.setGraphic(new ImageView("images/login.png"));
+            
             prihlasitButton.setOnAction(new EventHandler<ActionEvent>() {
 
                 @Override
                 public void handle(ActionEvent event) {
                     try {
                         logika.prihlasenieUzivatela(prihlMenoTextField.getText(), hesloTextField.getText());
+                        if(logika.getPrihlasenyUzivatel() != null){
+                            if(logika.getPrihlasenyUzivatel().isIsActivated() == true){
+                                primaryStage.setScene(zakladnaUserScene());
+                            } else {
+                                infoLabel.setText("Prosím, počkajte na aktiváciu účtu administrátorom aplikácie.");
+                            }
+                        } else {
+                                infoLabel.setText("Užívateľ neexistuje, prosím zaregistrujte sa!");
+                        }
                     } catch (Exception ex) {
                         Logger.getLogger(Anjapp.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -82,21 +97,24 @@ public class Anjapp extends Application {
             });
                     
             
-            Button registrovatButton = new Button("Registrácia");
-            registrovatButton.setOnAction(event ->
-                    primaryStage.setScene(registraciaScene()));
+            
+            ImageView registrovatIw = new ImageView(new Image("images/register.png"));
+            registrovatIw.setOnMouseReleased(event -> 
+                primaryStage.setScene(registraciaScene()));
+            
+            
+            HBox buttonyHBox = new HBox();
+            buttonyHBox.getChildren().addAll(prihlasitButton, registrovatIw);
+            buttonyHBox.setAlignment(Pos.CENTER);
             
             VBox centerVBox = new VBox();
+            centerVBox.setAlignment(Pos.CENTER);
             centerVBox.getChildren().addAll(privitanieLabel, prihlasovacieMenoLabel, prihlMenoTextField, hesloLabel,
-                    hesloTextField, prihlasitButton, registrovatButton);
+                    hesloTextField, buttonyHBox, infoLabel);
             
-            
-            //prerobiť paddingy a alignmenty
-            Label prazdnyLabel = new Label();
-            prazdnyLabel.setMinWidth(200);
             
             rozlozenieUvod.setCenter(centerVBox);
-            rozlozenieUvod.setLeft(prazdnyLabel);
+         
         return new Scene(rozlozenieUvod, 768, 432);
     }
 
@@ -160,7 +178,11 @@ public class Anjapp extends Application {
                               if(logika.isZhodaUsernamu() == true){
                                 zhodaHesielLabel.setText("Nickname už registrovaný");
                               }else {
-                                zhodaHesielLabel.setText("Registrácia úspešná, pokračujte prihlásením!");
+                                zhodaHesielLabel.setText("Registrácia úspešná, pokračujte prihlásením!");  
+                               /* Chyba pri navazovaní SSL spojenia, missing certificate
+                                new MailSender().generateAndSendEmail("Nová registrácia v aplikácií anglického jazyka",
+                                    "Nová registrácia - test <br><br> Prosím aktivujte užívateľa");
+                              */
                               }
                    
                            } catch (Exception e){
@@ -180,6 +202,20 @@ public class Anjapp extends Application {
         rozlozenieRegistracia.setCenter(centralnyVBox);
         
         return new Scene(rozlozenieRegistracia, 768, 432);
+    }
+    
+    
+    public Scene zakladnaUserScene(){
+        BorderPane zaklUserRozlozenie = new BorderPane();
+        zaklUserRozlozenie.setBackground(pozadie);
+        Label vitajteLabel = new Label("Vitajte!");
+        
+        
+     
+        
+        
+        zaklUserRozlozenie.setCenter(vitajteLabel);
+        return new Scene(zaklUserRozlozenie, 768, 432);
     }
     
     

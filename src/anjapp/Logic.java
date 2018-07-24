@@ -27,6 +27,7 @@ public class Logic {
     private static final String USER = "root";
     private static final String PASSWORD = "root";
     private boolean zhodaUsernamu = false;
+    private User prihlasenyUzivatel = null;
     
     
     public Logic(){
@@ -46,11 +47,16 @@ public class Logic {
             
             if (vysledokVyhladania.next() == false){
                 System.out.println("Žiaden záznam nenájdený");
+                prihlasenyUzivatel = null;
             }
             else{
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Vitajte " + username);
-                alert.showAndWait();
+                
+                prihlasenyUzivatel = new User(vysledokVyhladania.getString("username"),
+                vysledokVyhladania.getString("meno"), vysledokVyhladania.getString("email"),
+                vysledokVyhladania.getString("heslo"), vysledokVyhladania.getBoolean("isAdmin"),
+                vysledokVyhladania.getBoolean("isActivated"));
+                
+                System.out.println(prihlasenyUzivatel.getUsername() + prihlasenyUzivatel.isIsActivated());
             }
             connection.close();
         }
@@ -65,6 +71,7 @@ public class Logic {
     public boolean registraciaUzivatela(String username, String meno, String email,
             String heslo) throws Exception {
         boolean navrat = false;
+        zhodaUsernamu = false;
         try{
         Class.forName(JDBC_DRIVER);
         Connection connection = DriverManager.getConnection(DB_CONNECTION, USER, PASSWORD);
@@ -81,6 +88,7 @@ public class Logic {
             navrat = false;
             }
         }
+        
     
     return navrat;
     }
@@ -92,5 +100,10 @@ public class Logic {
     public void setZhodaUsernamu(boolean zhodaUsernamu) {
         this.zhodaUsernamu = zhodaUsernamu;
     }
+
+    public User getPrihlasenyUzivatel() {
+        return prihlasenyUzivatel;
+    }
+    
     
 }
