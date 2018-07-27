@@ -11,10 +11,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 /**
@@ -28,6 +33,7 @@ public class Logic {
     private static final String PASSWORD = "root";
     private boolean zhodaUsernamu = false;
     private User prihlasenyUzivatel = null;
+    
     
     
     public Logic(){
@@ -92,6 +98,34 @@ public class Logic {
     
     return navrat;
     }
+    
+    public Set<User> zoznamUzivatelov(){
+        Set<User> zoznamUserov = new HashSet<User>();
+        try{
+            
+        Class.forName(JDBC_DRIVER);
+        Connection connection = DriverManager.getConnection(DB_CONNECTION, USER, PASSWORD);
+        Statement statement = connection.createStatement();
+        ResultSet vysledokVyhladania = statement.executeQuery("SELECT * FROM"
+                + " ajapp.users WHERE isAdmin=false");
+        
+        while(vysledokVyhladania.next() == true){
+            System.out.println("Pridávam človeka");
+            zoznamUserov.add(new User(vysledokVyhladania.getString("username"),
+                    vysledokVyhladania.getString("meno"), vysledokVyhladania.getString("email"),
+                    vysledokVyhladania.getString("heslo"), vysledokVyhladania.getBoolean("isAdmin"),
+                    vysledokVyhladania.getBoolean("isActivated")));
+            System.out.println("Človek pridaný");
+            }
+        System.out.println("Nájdených " + zoznamUserov.size() + " userov");
+        connection.close();
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        
+        
+        return zoznamUserov;
+    }
 
     public boolean isZhodaUsernamu() {
         return zhodaUsernamu;
@@ -104,6 +138,10 @@ public class Logic {
     public User getPrihlasenyUzivatel() {
         return prihlasenyUzivatel;
     }
+
+
+    
+    
     
     
 }
