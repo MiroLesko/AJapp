@@ -33,7 +33,7 @@ public class Logic {
     private static final String PASSWORD = "root";
     private boolean zhodaUsernamu = false;
     private User prihlasenyUzivatel = null;
-    
+    private Set<User> zoznamVybranychUserov = new HashSet<User>();
     
     
     public Logic(){
@@ -126,6 +126,43 @@ public class Logic {
         
         return zoznamUserov;
     }
+    
+    public boolean aktivaciaUserov (Set<User> zoznamUserov){
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection connection = DriverManager.getConnection(DB_CONNECTION, USER, PASSWORD);
+            for (User user : zoznamUserov){
+                Statement statement = connection.createStatement();
+                int rs = statement.executeUpdate("UPDATE ajapp.users SET isActivated=true WHERE "
+                        + "username='" + user.getUsername() + "';");
+            
+            }
+            
+          connection.close();  
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        return true;
+    }
+    
+        public boolean deaktivaciaUserov (Set<User> zoznamUserov){
+        try{
+            Class.forName(JDBC_DRIVER);
+            Connection connection = DriverManager.getConnection(DB_CONNECTION, USER, PASSWORD);
+            for (User user : zoznamUserov){
+                Statement statement = connection.createStatement();
+                int rs = statement.executeUpdate("UPDATE ajapp.users SET isActivated=false WHERE "
+                        + "username='" + user.getUsername() + "';");
+            
+            }
+            
+          connection.close();  
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        return true;
+    }
+    
 
     public boolean isZhodaUsernamu() {
         return zhodaUsernamu;
@@ -139,7 +176,11 @@ public class Logic {
         return prihlasenyUzivatel;
     }
 
+    public Set<User> getZoznamVybranychUserov() {
+        return zoznamVybranychUserov;
+    }
 
+    
     
     
     

@@ -57,6 +57,7 @@ public class Anjapp extends Application {
                 BackgroundRepeat.SPACE, BackgroundPosition.CENTER, BackgroundSize.DEFAULT));
     Logic logika = new Logic();
     Stage primaryStage = new Stage();
+
     
     @Override
     public void start(Stage stage) {
@@ -82,13 +83,21 @@ public class Anjapp extends Application {
             
             
             Label infoLabel = new Label();
-            Button prihlasitButton = new Button();
-            prihlasitButton.setGraphic(new ImageView("images/login.png"));
+
+            ImageView prihlasitButton = new ImageView(new Image("images/login.png"));
+            prihlasitButton.setOnMouseEntered(event ->
+                    prihlasitButton.setImage(new Image("images/login_hover.png"))
+             );
             
-            prihlasitButton.setOnAction(new EventHandler<ActionEvent>() {
+            prihlasitButton.setOnMouseExited(event ->
+                    prihlasitButton.setImage(new Image("images/login.png"))
+             );
+            
+            
+            prihlasitButton.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
                 @Override
-                public void handle(ActionEvent event) {
+                public void handle(MouseEvent event) {
                     try {
                         logika.prihlasenieUzivatela(prihlMenoTextField.getText(), hesloTextField.getText());
                         if(logika.getPrihlasenyUzivatel() != null){
@@ -120,6 +129,7 @@ public class Anjapp extends Application {
             HBox buttonyHBox = new HBox();
             buttonyHBox.getChildren().addAll(prihlasitButton, registrovatIw);
             buttonyHBox.setAlignment(Pos.CENTER);
+            buttonyHBox.setSpacing(15);
             
             VBox centerVBox = new VBox();
             centerVBox.setAlignment(Pos.CENTER);
@@ -260,6 +270,9 @@ public class Anjapp extends Application {
         
         
         ImageView level1Iw = new ImageView(new Image("images/level1.png"));
+        level1Iw.setOnMouseReleased(event ->
+            primaryStage.setScene(level1Scene()));
+        
         ImageView level2Iw = new ImageView(new Image("images/level2.png"));
         
         spravaUctovIw.setOnMouseReleased(event ->
@@ -282,16 +295,37 @@ public class Anjapp extends Application {
     }
         
         public Scene spravaUctovScene(){
-           Set<String> zoznamVybranychUserov = new HashSet<String>();
-           BorderPane rozlozenieBP = new BorderPane();
-           rozlozenieBP.setBackground(pozadie);
+            logika.getZoznamVybranychUserov().clear();
+            BorderPane rozlozenieBP = new BorderPane();
+            rozlozenieBP.setBackground(pozadie);
            
-           ImageView aktivovatIw = new ImageView(new Image("images/activate.png"));
-           
-          
-           
-           
+           ImageView aktivovatIw = new ImageView(new Image("images/activate.png")); 
            ImageView zrusitIw = new ImageView(new Image("images/deactivate.png"));
+          
+                        
+           aktivovatIw.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+                if(logika.getZoznamVybranychUserov().isEmpty()){
+                    System.out.println("Zoznam prázdny");
+                } else {
+                    logika.aktivaciaUserov(logika.getZoznamVybranychUserov());
+                    primaryStage.setScene(spravaUctovScene());
+                }
+            }
+            });        
+           
+           zrusitIw.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+                if(logika.getZoznamVybranychUserov().isEmpty()){
+                    System.out.println("Zoznam prázdny");
+                } else {
+                    logika.deaktivaciaUserov(logika.getZoznamVybranychUserov());
+                    primaryStage.setScene(spravaUctovScene());
+                }
+            }
+            });        
+           
+           
            ImageView aktualizovatIw = new ImageView(new Image("images/refresh.png"));
            ImageView headingIw = new ImageView(new Image("images/zoznam.png"));
            
@@ -306,9 +340,6 @@ public class Anjapp extends Application {
                System.out.println("Prechádzam zoznam");
                HBox polozkaZoznamu = new HBox();
                RadioButton rb = new RadioButton();
-               if (rb.isSelected()){
-                   zoznamVybranychUserov.add(user.getUsername());
-               }
                Label label1 = new Label(user.getUsername());
                label1.setMinWidth(150);
                Label label2 = new Label(user.getMeno());
@@ -320,7 +351,11 @@ public class Anjapp extends Application {
                    puntik = new ImageView(new Image("images/red.png"));
                }
               
-              polozkaZoznamu.getChildren().addAll(rb, label1, label2, puntik);
+               rb.setOnAction(event -> 
+                   logika.getZoznamVybranychUserov().add(user));
+               
+                    
+               polozkaZoznamu.getChildren().addAll(rb, label1, label2, puntik);
               zoznamUserovObser.add(polozkaZoznamu);
               
            }
@@ -339,6 +374,16 @@ public class Anjapp extends Application {
            
             
         return new Scene(rozlozenieBP, 900, 546);
+        }
+        
+        public Scene level1Scene (){
+            BorderPane hlavnyBorderPane = new BorderPane();
+            hlavnyBorderPane.setBackground(pozadie);
+            
+            HBox ponukaHBox = new HBox();
+            
+        
+            return new Scene(hlavnyBorderPane, 900, 546);
         }
         
     
