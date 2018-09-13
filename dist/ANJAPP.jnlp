@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ANJAPP.jar" size="2830460" download="eager" />
+    <jar href="ANJAPP.jar" size="2944513" download="eager" />
     <jar href="lib\javax.mail.jar" size="654100" download="eager" />
     <jar href="lib\mysql-connector-java-8.0.11.jar" size="2036609" download="eager" />
   </resources>

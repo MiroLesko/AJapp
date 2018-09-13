@@ -61,7 +61,7 @@ public class Anjapp extends Application {
     
     @Override
     public void start(Stage stage) {
-  
+            
             primaryStage.setTitle("Výuková aplikácia anglického jazyka");
             primaryStage.setScene(uvodnaScene());
             primaryStage.show();
@@ -102,13 +102,17 @@ public class Anjapp extends Application {
                         logika.prihlasenieUzivatela(prihlMenoTextField.getText(), hesloTextField.getText());
                         if(logika.getPrihlasenyUzivatel() != null){
                             if(logika.getPrihlasenyUzivatel().isIsActivated() == true){
-                               if(logika.getPrihlasenyUzivatel().isIsAdmin() == true){
+                                logika.getLogger().zaloguj("User " + prihlMenoTextField.getText() + " has been successfully logged in from "
+                                        + logika.ipExternaAdresa());
+                                if(logika.getPrihlasenyUzivatel().isIsAdmin() == true){
                                     primaryStage.setScene(zakladnaAdminScene());
                                 } else {
                                     primaryStage.setScene(zakladnaUserScene());
                                     }
                             } else {
                                 infoLabel.setText("Prosím, počkajte na aktiváciu účtu administrátorom aplikácie.");
+                                logika.getLogger().zaloguj("Login of user " + prihlMenoTextField.getText() + " failed: user"
+                                        + " has not been activated yet");
                             }
                         } else {
                                 infoLabel.setText("Užívateľ neexistuje, prosím zaregistrujte sa!");
@@ -270,8 +274,13 @@ public class Anjapp extends Application {
         
         
         ImageView level1Iw = new ImageView(new Image("images/level1.png"));
-        level1Iw.setOnMouseReleased(event ->
-            primaryStage.setScene(level1Scene()));
+        level1Iw.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent event) {
+               logika.naplnBatohUlohami(1);
+               primaryStage.setScene(level1Scene());
+            }
+            });        
+           
         
         ImageView level2Iw = new ImageView(new Image("images/level2.png"));
         
@@ -380,9 +389,28 @@ public class Anjapp extends Application {
             BorderPane hlavnyBorderPane = new BorderPane();
             hlavnyBorderPane.setBackground(pozadie);
             
+            Button uloha1Button = new Button("Uloha 1");
+            uloha1Button.setOnAction(new EventHandler<ActionEvent>() {
+
+                @Override
+                public void handle(ActionEvent event) {
+                    logika.zbuildujUlohuVocabulary(logika.najdiUlohu("UL00000001"));
+                    
+                }
+            });
+            
+            Button uloha2Button = new Button("Uloha 2");
+            Button spatButton = new Button("Spat");
+            spatButton.setOnAction(event -> 
+                primaryStage.setScene(zakladnaAdminScene()));
+            
             HBox ponukaHBox = new HBox();
             
-        
+            ponukaHBox.getChildren().addAll(uloha1Button, uloha2Button);
+            hlavnyBorderPane.setCenter(ponukaHBox);
+            hlavnyBorderPane.setBottom(spatButton);
+           
+            
             return new Scene(hlavnyBorderPane, 900, 546);
         }
         

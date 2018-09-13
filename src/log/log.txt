@@ -1,0 +1,21 @@
+
+2018/09/11 15:49:22 User admin has been successfully logged in.
+2018/09/11 15:50:01 User admin has been successfully logged in.
+2018/09/11 16:00:11 Login of user admin failed: no record in the database
+2018/09/11 16:00:15 Login of user admin failed: no record in the database
+2018/09/11 16:00:18 Login of user admin failed: no record in the database
+2018/09/11 16:00:26 User tester has been successfully logged in.
+2018/09/11 16:00:26 Login of user tester failed: user has not been activated yet
+2018/09/11 16:04:38 Login of user admin failed: no such pair username/psw in the database
+2018/09/11 16:04:44 Login of user tester failed: user has not been activated yet
+2018/09/11 16:04:52 User admin has been successfully logged in.
+2018/09/11 16:08:38 com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018/09/11 16:10:03 User admin has been successfully logged in.
+2018/09/11 18:11:44 User admin has been successfully logged in from 146.102.120.16
+2018/09/11 18:14:00 Login of user  failed: no such pair username/psw in the database (146.102.120.16)
+2018/09/11 18:14:22 Login of user gehdkgjnsk failed: no such pair username/psw in the database (146.102.120.16)
+2018/09/11 20:17:07 User admin has been successfully logged in from 146.102.120.16
+2018/09/11 20:19:15 User admin has been successfully logged in from 146.102.120.16
+2018/09/11 20:21:12 User admin has been successfully logged in from 146.102.120.16
